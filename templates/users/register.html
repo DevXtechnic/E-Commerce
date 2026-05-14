@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<section class="section page-section">
+    <div class="container">
+        <div class="auth-container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h1>Create Account</h1>
+                    <p>Join the Devbazer community</p>
+                </div>
+                <form method="POST" class="auth-form">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                        <span class="field-error">{{ field.errors.0 }}</span>
+                        {% endif %}
+                        {% if field.help_text %}
+                        <span class="field-help">{{ field.help_text }}</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Create Account <i class="fas fa-user-plus"></i></button>
+                </form>
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="{% url 'users:login' %}">Login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

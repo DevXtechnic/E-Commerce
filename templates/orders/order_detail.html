@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}Order #{{ order.order_number }}{% endblock %}
+{% block content %}
+<section class="section page-section">
+    <div class="container">
+        <div class="page-header">
+            <h1>Order #{{ order.order_number }}</h1>
+            <span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span>
+        </div>
+        <div class="order-detail-layout">
+            <div class="order-detail-card">
+                <h3>Order Items</h3>
+                {% for item in order.items.all %}
+                <div class="order-item">
+                    <div class="order-item-info">
+                        <strong>{{ item.product_name }}</strong>
+                        <span>Qty: {{ item.quantity }} × Rs. {{ item.price|intcomma }}</span>
+                    </div>
+                    <span class="order-item-total">Rs. {{ item.line_total|intcomma }}</span>
+                </div>
+                {% endfor %}
+                <div class="summary-row total"><span>Total</span><span>Rs. {{ order.total|intcomma }}</span></div>
+            </div>
+            <div class="order-detail-card">
+                <h3>Shipping Details</h3>
+                <p><strong>{{ order.full_name }}</strong></p>
+                <p>{{ order.address }}, {{ order.city }}{% if order.state %}, {{ order.state }}{% endif %}</p>
+                <p>{{ order.phone }} · {{ order.email }}</p>
+                <h4>Payment Method</h4>
+                <p>{{ order.get_payment_method_display }}</p>
+                {% if order.notes %}<h4>Notes</h4><p>{{ order.notes }}</p>{% endif %}
+                <p class="order-date">Placed: {{ order.created_at|date:"F d, Y g:i A" }}</p>
+            </div>
+        </div>
+        <a href="{% url 'orders:order_history' %}" class="btn btn-outline">← Back to Orders</a>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}CRM Dashboard{% endblock %}
+{% block content %}
+<section class="section page-section">
+    <div class="container">
+        <div class="page-header"><h1><i class="fas fa-chart-line"></i> CRM Dashboard</h1><p>Business overview at a glance</p></div>
+        <div class="crm-stats-grid">
+            <div class="crm-stat-card"><div class="crm-stat-icon bg-primary"><i class="fas fa-shopping-cart"></i></div><div class="crm-stat-info"><span class="crm-stat-num">{{ total_orders }}</span><span class="crm-stat-label">Total Orders</span></div></div>
+            <div class="crm-stat-card"><div class="crm-stat-icon bg-warning"><i class="fas fa-clock"></i></div><div class="crm-stat-info"><span class="crm-stat-num">{{ pending_orders }}</span><span class="crm-stat-label">Pending</span></div></div>
+            <div class="crm-stat-card"><div class="crm-stat-icon bg-success"><i class="fas fa-rupee-sign"></i></div><div class="crm-stat-info"><span class="crm-stat-num">Rs. {{ total_revenue|intcomma }}</span><span class="crm-stat-label">Revenue</span></div></div>
+            <div class="crm-stat-card"><div class="crm-stat-icon bg-info"><i class="fas fa-envelope"></i></div><div class="crm-stat-info"><span class="crm-stat-num">{{ unread_messages }}</span><span class="crm-stat-label">Unread Messages</span></div></div>
+            <div class="crm-stat-card"><div class="crm-stat-icon bg-accent"><i class="fas fa-users"></i></div><div class="crm-stat-info"><span class="crm-stat-num">{{ total_subscribers }}</span><span class="crm-stat-label">Subscribers</span></div></div>
+        </div>
+        <div class="crm-layout">
+            <div class="crm-card">
+                <h3>Recent Orders</h3>
+                <table class="data-table">
+                    <thead><tr><th>Order #</th><th>Customer</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+                    <tbody>
+                        {% for order in recent_orders %}
+                        <tr>
+                            <td><strong>{{ order.order_number }}</strong></td>
+                            <td>{{ order.full_name }}</td>
+                            <td>Rs. {{ order.total|intcomma }}</td>
+                            <td><span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span></td>
+                            <td>{{ order.created_at|date:"M d" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="crm-card">
+                <h3>Recent Messages</h3>
+                {% for msg in recent_messages %}
+                <div class="crm-message {% if not msg.is_read %}unread{% endif %}">
+                    <div class="msg-header"><strong>{{ msg.name }}</strong><span>{{ msg.created_at|timesince }} ago</span></div>
+                    <div class="msg-subject">{{ msg.subject }}</div>
+                    <p>{{ msg.message|truncatewords:20 }}</p>
+                </div>
+                {% empty %}
+                <p class="dash-empty">No messages yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+        <a href="/admin/" class="btn btn-primary"><i class="fas fa-cog"></i> Go to Admin Panel</a>
+    </div>
+</section>
+{% endblock %}

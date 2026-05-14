@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}Order History{% endblock %}
+{% block content %}
+<section class="section page-section">
+    <div class="container">
+        <div class="page-header"><h1><i class="fas fa-box"></i> Order History</h1></div>
+        {% if orders %}
+        <div class="orders-table-wrap">
+            <table class="data-table">
+                <thead><tr><th>Order #</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td><strong>{{ order.order_number }}</strong></td>
+                        <td>{{ order.created_at|date:"M d, Y" }}</td>
+                        <td>{{ order.item_count }} item{{ order.item_count|pluralize }}</td>
+                        <td>Rs. {{ order.total|intcomma }}</td>
+                        <td><span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span></td>
+                        <td><a href="{% url 'orders:order_detail' order.order_number %}" class="btn btn-sm btn-outline">View</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-box"></i>
+            <h3>No orders yet</h3>
+            <p>Start shopping to see your orders here.</p>
+            <a href="{% url 'shop:product_list' %}" class="btn btn-primary">Start Shopping</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

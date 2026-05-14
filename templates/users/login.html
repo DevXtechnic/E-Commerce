@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<section class="section page-section">
+    <div class="container">
+        <div class="auth-container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h1>Welcome Back</h1>
+                    <p>Login to your DevXtechnic account</p>
+                </div>
+                <form method="POST" class="auth-form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="username"><i class="fas fa-user"></i> Username</label>
+                        <input type="text" name="username" id="username" class="form-input" required autofocus placeholder="Enter your username">
+                    </div>
+                    <div class="form-group">
+                        <label for="password"><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" name="password" id="password" class="form-input" required placeholder="Enter your password">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Login <i class="fas fa-sign-in-alt"></i></button>
+                </form>
+                <div class="auth-footer">
+                    <p>Don't have an account? <a href="{% url 'users:register' %}">Create one</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

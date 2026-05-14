@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<section class="section page-section">
+    <div class="container">
+        <div class="page-header">
+            <h1>Welcome, {{ user.first_name|default:user.username }}!</h1>
+            <p>Manage your account and track your orders</p>
+        </div>
+        <div class="dashboard-grid">
+            <div class="dash-card">
+                <div class="dash-card-icon"><i class="fas fa-box"></i></div>
+                <h3>Recent Orders</h3>
+                {% if orders %}
+                <div class="dash-list">
+                    {% for order in orders %}
+                    <a href="{% url 'orders:order_detail' order.order_number %}" class="dash-list-item">
+                        <span class="order-num">#{{ order.order_number }}</span>
+                        <span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span>
+                        <span>Rs. {{ order.total|intcomma }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+                <a href="{% url 'orders:order_history' %}" class="dash-link">View All Orders →</a>
+                {% else %}
+                <p class="dash-empty">No orders yet.</p>
+                {% endif %}
+            </div>
+            <div class="dash-card">
+                <div class="dash-card-icon"><i class="fas fa-heart"></i></div>
+                <h3>Wishlist</h3>
+                {% if wishlist_items %}
+                <div class="dash-products">
+                    {% for product in wishlist_items %}
+                    <a href="{{ product.get_absolute_url }}" class="dash-product-mini">
+                        {% if product.primary_image %}
+                        <img src="{{ product.primary_image.image.url }}" alt="{{ product.name }}">
+                        {% endif %}
+                        <span>{{ product.name|truncatewords:5 }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+                <a href="{% url 'users:wishlist' %}" class="dash-link">View Wishlist →</a>
+                {% else %}
+                <p class="dash-empty">Your wishlist is empty.</p>
+                {% endif %}
+            </div>
+            <div class="dash-card">
+                <div class="dash-card-icon"><i class="fas fa-user-cog"></i></div>
+                <h3>Quick Links</h3>
+                <div class="dash-links">
+                    <a href="{% url 'users:profile' %}" class="btn btn-outline btn-block"><i class="fas fa-user-edit"></i> Edit Profile</a>
+                    <a href="{% url 'cart:view_cart' %}" class="btn btn-outline btn-block"><i class="fas fa-shopping-bag"></i> View Cart</a>
+                    <a href="{% url 'shop:product_list' %}" class="btn btn-outline btn-block"><i class="fas fa-store"></i> Browse Products</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

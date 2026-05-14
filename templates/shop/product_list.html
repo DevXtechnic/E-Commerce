@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}{% load humanize %}
+
+{% block title %}{% if active_category %}{{ active_category.name }}{% else %}All Products{% endif %}{% endblock %}
+
+{% block content %}
+<section class="section page-section">
+    <div class="container">
+        <div class="page-header">
+            <h1>{% if active_category %}{{ active_category.name }}{% else %}All Products{% endif %}</h1>
+            <p>{{ products.count }} product{{ products.count|pluralize }} found</p>
+        </div>
+        <div class="shop-layout">
+            <!-- Sidebar Filters -->
+            <aside class="shop-sidebar">
+                <div class="filter-group">
+                    <h4>Categories</h4>
+                    <ul class="filter-list">
+                        <li><a href="{% url 'shop:product_list' %}" class="{% if not active_category %}active{% endif %}">All</a></li>
+                        {% for cat in categories %}
+                        <li><a href="{% url 'shop:product_list' %}?category={{ cat.slug }}" class="{% if active_category.slug == cat.slug %}active{% endif %}">{{ cat.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="filter-group">
+                    <h4>Brands</h4>
+                    <ul class="filter-list">
+                        {% for brand in brands %}
+                        <li><a href="{% url 'shop:product_list' %}?brand={{ brand.slug }}">{{ brand.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="filter-group">
+                    <h4>Sort By</h4>
+                    <ul class="filter-list">
+                        <li><a href="?sort=newest{% if active_category %}&category={{ active_category.slug }}{% endif %}" class="{% if current_sort == 'newest' %}active{% endif %}">Newest</a></li>
+                        <li><a href="?sort=price_low{% if active_category %}&category={{ active_category.slug }}{% endif %}" class="{% if current_sort == 'price_low' %}active{% endif %}">Price: Low → High</a></li>
+                        <li><a href="?sort=price_high{% if active_category %}&category={{ active_category.slug }}{% endif %}" class="{% if current_sort == 'price_high' %}active{% endif %}">Price: High → Low</a></li>
+                        <li><a href="?sort=name{% if active_category %}&category={{ active_category.slug }}{% endif %}" class="{% if current_sort == 'name' %}active{% endif %}">Name A-Z</a></li>
+                    </ul>
+                </div>
+            </aside>
+            <!-- Product Grid -->
+            <div class="shop-products">
+                {% if products %}
+                <div class="product-grid">
+                    {% for product in products %}
+                    {% include "shop/_product_card.html" with product=product %}
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <h3>No products found</h3>
+                    <p>Try adjusting your filters.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

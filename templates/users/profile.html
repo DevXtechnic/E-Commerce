@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<section class="section page-section">
+    <div class="container">
+        <div class="page-header">
+            <h1>My Profile</h1>
+        </div>
+        <div class="profile-layout">
+            <div class="profile-card">
+                <h3>Personal Information</h3>
+                <form method="POST" enctype="multipart/form-data" class="profile-form">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}<span class="field-error">{{ field.errors.0 }}</span>{% endif %}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+            <div class="profile-card">
+                <h3>Saved Addresses</h3>
+                {% if addresses %}
+                {% for addr in addresses %}
+                <div class="address-card">
+                    {% if addr.is_default %}<span class="default-badge">Default</span>{% endif %}
+                    <strong>{{ addr.full_name }}</strong>
+                    <p>{{ addr.street }}, {{ addr.city }}{% if addr.state %}, {{ addr.state }}{% endif %}</p>
+                    <p>{{ addr.phone }}</p>
+                    <form action="{% url 'users:delete_address' addr.id %}" method="POST" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                    </form>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p class="dash-empty">No saved addresses.</p>
+                {% endif %}
+                <a href="{% url 'users:add_address' %}" class="btn btn-outline btn-sm"><i class="fas fa-plus"></i> Add Address</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

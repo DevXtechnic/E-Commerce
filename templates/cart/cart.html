@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Shopping Cart{% endblock %}
+
+{% block content %}
+<section class="section page-section">
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-shopping-bag"></i> Shopping Cart</h1>
+        </div>
+        {% if items %}
+        <div class="cart-layout">
+            <div class="cart-items">
+                {% for item in items %}
+                <div class="cart-item" id="cart-item-{{ item.id }}">
+                    <div class="cart-item-img">
+                        {% if item.product.primary_image %}
+                        <img src="{{ item.product.primary_image.image.url }}" alt="{{ item.product.name }}">
+                        {% else %}
+                        <div class="product-placeholder sm"><i class="fas fa-box-open"></i></div>
+                        {% endif %}
+                    </div>
+                    <div class="cart-item-info">
+                        <h3><a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a></h3>
+                        {% if item.product.brand %}<span class="product-brand">{{ item.product.brand.name }}</span>{% endif %}
+                        <span class="cart-item-price">Rs. {{ item.product.current_price|intcomma }}</span>
+                    </div>
+                    <div class="cart-item-qty">
+                        <form action="{% url 'cart:update_cart' item.id %}" method="POST" class="cart-qty-form">
+                            {% csrf_token %}
+                            <div class="qty-control">
+                                <button type="button" class="qty-btn" onclick="let q=this.nextElementSibling;q.value=Math.max(1,parseInt(q.value)-1);this.closest('form').submit()">−</button>
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" onchange="this.closest('form').submit()">
+                                <button type="button" class="qty-btn" onclick="let q=this.previousElementSibling;q.value=Math.min({{ item.product.stock }},parseInt(q.value)+1);this.closest('form').submit()">+</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="cart-item-total">
+                        <span>Rs. {{ item.line_total|intcomma }}</span>
+                    </div>
+                    <form action="{% url 'cart:remove_from_cart' item.id %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="cart-remove-btn" title="Remove"><i class="fas fa-trash-alt"></i></button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="cart-summary">
+                <h3>Order Summary</h3>
+                <div class="summary-row"><span>Subtotal ({{ cart.total_items }} items)</span><span>Rs. {{ cart.subtotal|intcomma }}</span></div>
+                <div class="summary-row"><span>Delivery</span><span class="text-success">Free</span></div>
+                <div class="summary-row total"><span>Total</span><span>Rs. {{ cart.subtotal|intcomma }}</span></div>
+                <a href="{% url 'orders:checkout' %}" class="btn btn-primary btn-lg btn-block">Proceed to Checkout <i class="fas fa-arrow-right"></i></a>
+                <a href="{% url 'shop:product_list' %}" class="btn btn-outline btn-block">Continue Shopping</a>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-shopping-bag"></i>
+            <h3>Your cart is empty</h3>
+            <p>Looks like you haven't added any products yet.</p>
+            <a href="{% url 'shop:product_list' %}" class="btn btn-primary">Start Shopping</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

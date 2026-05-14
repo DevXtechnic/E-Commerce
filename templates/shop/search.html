@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Search: {{ query }}{% endblock %}
+
+{% block content %}
+<section class="section page-section">
+    <div class="container">
+        <div class="page-header">
+            <h1>Search Results{% if query %} for "{{ query }}"{% endif %}</h1>
+            <p>{{ products.count }} product{{ products.count|pluralize }} found</p>
+        </div>
+        {% if products %}
+        <div class="product-grid">
+            {% for product in products %}
+            {% include "shop/_product_card.html" with product=product %}
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-search"></i>
+            <h3>No results found</h3>
+            <p>Try different keywords or browse our <a href="{% url 'shop:product_list' %}">product catalog</a>.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

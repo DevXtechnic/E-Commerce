@@ -1,0 +1,51 @@
+{% load humanize %}
+<div class="product-card">
+    <a href="{{ product.get_absolute_url }}" class="product-card-img">
+        {% if product.primary_image %}
+        <img src="{{ product.primary_image.image.url }}" alt="{{ product.name }}" loading="lazy">
+        {% else %}
+        <div class="product-placeholder"><i class="fas fa-box-open"></i></div>
+        {% endif %}
+        {% if product.discount_percent %}
+        <span class="product-badge badge-sale">-{{ product.discount_percent }}%</span>
+        {% endif %}
+        {% if product.is_featured %}
+        <span class="product-badge badge-featured">Featured</span>
+        {% endif %}
+    </a>
+    <div class="product-card-body">
+        {% if product.brand %}
+        <span class="product-brand">{{ product.brand.name }}</span>
+        {% endif %}
+        <h3 class="product-name"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
+        <div class="product-rating">
+            {% with rating=product.average_rating %}
+            {% for i in "12345" %}
+            <i class="fas fa-star{% if forloop.counter > rating %}-half-alt{% endif %}"></i>
+            {% endfor %}
+            <span>({{ product.reviews.count }})</span>
+            {% endwith %}
+        </div>
+        <div class="product-price">
+            {% if product.discount_price %}
+            <span class="price-current">Rs. {{ product.discount_price|intcomma }}</span>
+            <span class="price-original">Rs. {{ product.price|intcomma }}</span>
+            {% else %}
+            <span class="price-current">Rs. {{ product.price|intcomma }}</span>
+            {% endif %}
+        </div>
+        <div class="product-card-actions">
+            <form action="{% url 'cart:add_to_cart' product.id %}" method="POST" class="add-to-cart-form">
+                {% csrf_token %}
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="btn btn-primary btn-sm btn-add-cart" {% if not product.in_stock %}disabled{% endif %}>
+                    {% if product.in_stock %}
+                    <i class="fas fa-shopping-bag"></i> Add to Cart
+                    {% else %}
+                    Out of Stock
+                    {% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}FAQ{% endblock %}
+{% block content %}
+<section class="section page-section">
+    <div class="container">
+        <div class="page-header"><h1>Frequently Asked Questions</h1><p>Find answers to common questions</p></div>
+        <div class="faq-list">
+            {% for faq in faqs %}
+            <details class="faq-item">
+                <summary class="faq-question"><span>{{ faq.question }}</span><i class="fas fa-chevron-down"></i></summary>
+                <div class="faq-answer"><p>{{ faq.answer }}</p></div>
+            </details>
+            {% empty %}
+            <div class="empty-state">
+                <i class="fas fa-question-circle"></i>
+                <h3>No FAQs yet</h3>
+                <p>Check back soon or <a href="{% url 'mystore:contact' %}">contact us</a>.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}Order Confirmed{% endblock %}
+{% block content %}
+<section class="section page-section">
+    <div class="container">
+        <div class="confirmation-card">
+            <div class="confirm-icon"><i class="fas fa-check-circle"></i></div>
+            <h1>Order Placed Successfully! 🎉</h1>
+            <p class="confirm-order-num">Order #{{ order.order_number }}</p>
+            <p>Thank you for shopping with DevXtechnic. We'll process your order shortly.</p>
+            <div class="confirm-details">
+                <div class="confirm-row"><span>Name</span><span>{{ order.full_name }}</span></div>
+                <div class="confirm-row"><span>Phone</span><span>{{ order.phone }}</span></div>
+                <div class="confirm-row"><span>Address</span><span>{{ order.address }}, {{ order.city }}</span></div>
+                <div class="confirm-row"><span>Payment</span><span>{{ order.get_payment_method_display }}</span></div>
+                <div class="confirm-row total"><span>Total</span><span>Rs. {{ order.total|intcomma }}</span></div>
+            </div>
+            <div class="confirm-actions">
+                <a href="{% url 'orders:order_detail' order.order_number %}" class="btn btn-primary">View Order</a>
+                <a href="{% url 'shop:home' %}" class="btn btn-outline">Continue Shopping</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Contact Us{% endblock %}
+{% block content %}
+<section class="section page-section">
+    <div class="container">
+        <div class="auth-container">
+            <div class="auth-card wide-card">
+                <div class="auth-header">
+                    <h1>Get in Touch</h1>
+                    <p>Have a question or need help? We'd love to hear from you.</p>
+                </div>
+                <form method="POST" class="auth-form">
+                    {% csrf_token %}
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="name"><i class="fas fa-user"></i> Name</label>
+                            <input type="text" name="name" id="name" class="form-input" required placeholder="Your name">
+                        </div>
+                        <div class="form-group">
+                            <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                            <input type="email" name="email" id="email" class="form-input" required placeholder="your@email.com">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="subject"><i class="fas fa-tag"></i> Subject</label>
+                            <input type="text" name="subject" id="subject" class="form-input" required placeholder="What's this about?">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="message"><i class="fas fa-comment"></i> Message</label>
+                            <textarea name="message" id="message" class="form-input" rows="5" required placeholder="Tell us more..."></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Send Message <i class="fas fa-paper-plane"></i></button>
+                </form>
+                <div class="contact-info-grid">
+                    <div class="contact-info-item"><i class="fas fa-map-marker-alt"></i><span>Global Operations</span></div>
+                    <div class="contact-info-item"><i class="fas fa-phone"></i><span>+1-800-DEVBAZER</span></div>
+                    <div class="contact-info-item"><i class="fas fa-envelope"></i><span>hello@devbazer.com</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% load static %}{% load humanize %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-glow"></div>
+    <div class="container hero-content">
+        <div class="hero-badge"><i class="fas fa-fire"></i> #1 Tech Marketplace</div>
+        <h1>The Future of<br><span class="hero-accent">Tech Shopping</span></h1>
+        <p>Discover cutting-edge laptops, phones, and accessories — curated for quality, delivered with trust.</p>
+        <div class="hero-actions">
+            <a href="{% url 'shop:product_list' %}" class="btn btn-primary btn-lg">Shop Now <i class="fas fa-arrow-right"></i></a>
+            <a href="{% url 'mystore:about' %}" class="btn btn-glass btn-lg">Learn More</a>
+        </div>
+        <div class="hero-stats">
+            <div class="stat"><span class="stat-num">500+</span><span class="stat-label">Products</span></div>
+            <div class="stat-divider"></div>
+            <div class="stat"><span class="stat-num">10K+</span><span class="stat-label">Customers</span></div>
+            <div class="stat-divider"></div>
+            <div class="stat"><span class="stat-num">4.9★</span><span class="stat-label">Rating</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories -->
+{% if categories %}
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Shop by Category</h2>
+            <a href="{% url 'shop:product_list' %}" class="section-link">View All <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="category-grid">
+            {% for cat in categories %}
+            <a href="{% url 'shop:product_list' %}?category={{ cat.slug }}" class="category-card">
+                <div class="category-icon">
+                    {% if cat.image %}
+                    <img src="{{ cat.image.url }}" alt="{{ cat.name }}">
+                    {% else %}
+                    <i class="fas fa-{% if cat.name == 'Laptops' %}laptop{% elif cat.name == 'Smartphones' %}mobile-alt{% elif cat.name == 'Audio' %}headphones{% elif cat.name == 'Gaming' %}gamepad{% elif cat.name == 'Networking' %}wifi{% else %}microchip{% endif %}"></i>
+                    {% endif %}
+                </div>
+                <h3>{{ cat.name }}</h3>
+                <span class="category-count">{{ cat.products.count }} items</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Featured Products -->
+{% if featured_products %}
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Featured Products</h2>
+            <a href="{% url 'shop:product_list' %}" class="section-link">View All <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="product-grid">
+            {% for product in featured_products %}
+            {% include "shop/_product_card.html" with product=product %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Deals Banner -->
+{% if deal_products %}
+<section class="section deals-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>🔥 Hot Deals</h2>
+            <p>Limited time offers</p>
+        </div>
+        <div class="product-grid">
+            {% for product in deal_products %}
+            {% include "shop/_product_card.html" with product=product %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Latest Products -->
+{% if latest_products %}
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2>New Arrivals</h2>
+        </div>
+        <div class="product-grid">
+            {% for product in latest_products %}
+            {% include "shop/_product_card.html" with product=product %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Trust Badges -->
+<section class="section trust-section">
+    <div class="container">
+        <div class="trust-grid">
+            <div class="trust-item"><div class="trust-icon"><i class="fas fa-shipping-fast"></i></div><h4>Free Delivery</h4><p>On orders over Rs. 5,000</p></div>
+            <div class="trust-item"><div class="trust-icon"><i class="fas fa-shield-alt"></i></div><h4>Genuine Warranty</h4><p>All products guaranteed</p></div>
+            <div class="trust-item"><div class="trust-icon"><i class="fas fa-headset"></i></div><h4>24/7 Support</h4><p>Always here to help</p></div>
+            <div class="trust-item"><div class="trust-icon"><i class="fas fa-undo"></i></div><h4>Easy Returns</h4><p>7-day return policy</p></div>
+        </div>
+    </div>
+</section>
+{% endblock %}
