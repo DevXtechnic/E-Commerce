@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - Daraz Clone{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">My Profile</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="phone_number" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone_number" name="phone_number"
+                                   value="{{ profile.phone_number }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="preferred_language" class="form-label">Preferred Language</label>
+                            <select class="form-select" id="preferred_language" name="preferred_language">
+                                <option value="en" {% if profile.preferred_language == 'en' %}selected{% endif %}>English</option>
+                                <option value="ne" {% if profile.preferred_language == 'ne' %}selected{% endif %}>नेपाली (Nepali)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Address</label>
+                        <textarea class="form-control" id="address" name="address" rows="3">{{ profile.address }}</textarea>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="city" class="form-label">City</label>
+                            <input type="text" class="form-control" id="city" name="city" value="{{ profile.city }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="province" class="form-label">Province/State</label>
+                            <input type="text" class="form-control" id="province" name="province" value="{{ profile.province }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="postal_code" class="form-label">Postal Code</label>
+                            <input type="text" class="form-control" id="postal_code" name="postal_code" value="{{ profile.postal_code }}">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="date_of_birth" class="form-label">Date of Birth</label>
+                        <input type="date" class="form-control" id="date_of_birth" name="date_of_birth"
+                               value="{{ profile.date_of_birth|date:'Y-m-d' }}">
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="newsletter_subscribed" name="newsletter_subscribed"
+                               {% if profile.newsletter_subscribed %}checked{% endif %}>
+                        <label class="form-check-label" for="newsletter_subscribed">
+                            Subscribe to newsletter for updates and offers
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                    <a href="{% url 'shop:home' %}" class="btn btn-outline-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
