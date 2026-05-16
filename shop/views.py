@@ -3,7 +3,6 @@ from django.db.models import Q, Avg
 from .models import Product, Category, Brand, Review
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from .search_index import search_index
 
 
 def home(request):
@@ -81,19 +80,6 @@ def product_detail(request, slug):
         "specs": product.get_specs_list(),
     }
     return render(request, "shop/product_detail.html", context)
-
-
-USE_CATEGORY_SEARCH = True
-
-def suggestions(request):
-    query = request.GET.get("q", "").strip()
-    if len(query) < 2:
-        return JsonResponse({"suggestions": []})
-    if USE_CATEGORY_SEARCH:
-        results = search_index.search_by_category(query)
-    else:
-        results = search_index.search(query)
-    return JsonResponse({"suggestions": results})
 
 
 def search(request):
