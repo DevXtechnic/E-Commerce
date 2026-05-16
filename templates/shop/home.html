@@ -7,20 +7,80 @@
 <!-- Hero Section -->
 <section class="hero">
     <div class="hero-glow"></div>
-    <div class="container hero-content">
-        <div class="hero-badge"><i class="fas fa-fire"></i> #1 Tech Marketplace</div>
-        <h1>The Future of<br><span class="hero-accent">Tech Shopping</span></h1>
-        <p>Discover cutting-edge laptops, phones, and accessories — curated for quality, delivered with trust.</p>
-        <div class="hero-actions">
-            <a href="{% url 'shop:product_list' %}" class="btn btn-primary btn-lg">Shop Now <i class="fas fa-arrow-right"></i></a>
-            <a href="{% url 'mystore:about' %}" class="btn btn-glass btn-lg">Learn More</a>
+    <div class="container hero-layout">
+        <div class="hero-content">
+            <div class="hero-badge"><i class="fas fa-fire"></i> #1 Tech Marketplace</div>
+            <h1>The Future of<br><span class="hero-accent">Tech Shopping</span></h1>
+            <p>Discover cutting-edge laptops, phones, and accessories — curated for quality, delivered with trust.</p>
+            <div class="hero-actions">
+                <a href="{% url 'shop:product_list' %}" class="btn btn-primary btn-lg">Shop Now <i class="fas fa-arrow-right"></i></a>
+                <a href="{% url 'mystore:about' %}" class="btn btn-glass btn-lg">Learn More</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat"><span class="stat-num">500+</span><span class="stat-label">Products</span></div>
+                <div class="stat-divider"></div>
+                <div class="stat"><span class="stat-num">10K+</span><span class="stat-label">Customers</span></div>
+                <div class="stat-divider"></div>
+                <div class="stat"><span class="stat-num">4.9★</span><span class="stat-label">Rating</span></div>
+            </div>
         </div>
-        <div class="hero-stats">
-            <div class="stat"><span class="stat-num">500+</span><span class="stat-label">Products</span></div>
-            <div class="stat-divider"></div>
-            <div class="stat"><span class="stat-num">10K+</span><span class="stat-label">Customers</span></div>
-            <div class="stat-divider"></div>
-            <div class="stat"><span class="stat-num">4.9★</span><span class="stat-label">Rating</span></div>
+    </div>
+</section>
+
+<!-- Promo Carousel -->
+<section class="promo-carousel-section">
+    <div class="container">
+        <div class="swiper promo-swiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide promo-slide">
+                    <div class="promo-bg promo-bg-1"></div>
+                    <div class="promo-content">
+                        <span class="promo-tag">New Arrivals</span>
+                        <h2>Latest Tech, Just Dropped</h2>
+                        <p>Be the first to own the newest gadgets and accessories.</p>
+                        <a href="{% url 'shop:product_list' %}" class="btn btn-primary">Shop New <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <div class="swiper-slide promo-slide">
+                    <div class="promo-bg promo-bg-2"></div>
+                    <div class="promo-content">
+                        <span class="promo-tag promo-tag-sale">Limited Offer</span>
+                        <h2>Up to 40% Off</h2>
+                        <p>Seasonal deals on laptops, phones, and premium accessories.</p>
+                        <a href="{% url 'shop:product_list' %}" class="btn btn-primary">View Deals <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <div class="swiper-slide promo-slide">
+                    <div class="promo-bg promo-bg-3"></div>
+                    <div class="promo-content">
+                        <span class="promo-tag promo-tag-brand">Featured</span>
+                        <h2>Apple Collection</h2>
+                        <p>MacBooks, iPhones, AirPods — all in one place.</p>
+                        <a href="{% url 'shop:product_list' %}?category=apple" class="btn btn-primary">Explore <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <div class="swiper-slide promo-slide">
+                    <div class="promo-bg promo-bg-4"></div>
+                    <div class="promo-content">
+                        <span class="promo-tag promo-tag-shipping">Perk</span>
+                        <h2>Free Shipping Over $50</h2>
+                        <p>Fast, reliable delivery straight to your door.</p>
+                        <a href="{% url 'shop:product_list' %}" class="btn btn-primary">Start Shopping <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <div class="swiper-slide promo-slide">
+                    <div class="promo-bg promo-bg-saas"></div>
+                    <div class="promo-content">
+                        <span class="promo-tag promo-tag-saas">For Sellers</span>
+                        <h2>List Your Shop Here</h2>
+                        <p>No middleman commission. Just a flat SaaS fee. Keep 100% of your profits.</p>
+                        <a href="{% url 'mystore:about' %}" class="btn btn-primary">Learn More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-pagination"></div>
         </div>
     </div>
 </section>
@@ -30,7 +90,10 @@
 <section class="section">
     <div class="container">
         <div class="section-header">
-            <h2>Shop by Category</h2>
+            <div>
+                <div class="section-divider"></div>
+                <h2>Shop by Category</h2>
+            </div>
             <a href="{% url 'shop:product_list' %}" class="section-link">View All <i class="fas fa-arrow-right"></i></a>
         </div>
         <div class="category-grid">
@@ -57,7 +120,10 @@
 <section class="section">
     <div class="container">
         <div class="section-header">
-            <h2>Featured Products</h2>
+            <div>
+                <div class="section-divider"></div>
+                <h2>Featured Products</h2>
+            </div>
             <a href="{% url 'shop:product_list' %}" class="section-link">View All <i class="fas fa-arrow-right"></i></a>
         </div>
         <div class="product-grid">
@@ -74,8 +140,11 @@
 <section class="section deals-section">
     <div class="container">
         <div class="section-header">
-            <h2>🔥 Hot Deals</h2>
-            <p>Limited time offers</p>
+            <div>
+                <div class="section-divider"></div>
+                <h2>🔥 Hot Deals</h2>
+                <p>Limited time offers</p>
+            </div>
         </div>
         <div class="product-grid">
             {% for product in deal_products %}
@@ -91,7 +160,10 @@
 <section class="section">
     <div class="container">
         <div class="section-header">
-            <h2>New Arrivals</h2>
+            <div>
+                <div class="section-divider"></div>
+                <h2>New Arrivals</h2>
+            </div>
         </div>
         <div class="product-grid">
             {% for product in latest_products %}

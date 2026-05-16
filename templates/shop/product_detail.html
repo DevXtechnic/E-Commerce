@@ -63,7 +63,7 @@
                 <p class="product-desc">{{ product.description }}</p>
 
                 {% if product.in_stock %}
-                <form action="{% url 'cart:add_to_cart' product.id %}" method="POST" class="add-to-cart-form detail-form">
+                <form action="{% url 'cart:add_to_cart' product.id %}" method="POST" class="add-to-cart-form no-ajax detail-form">
                     {% csrf_token %}
                     <div class="qty-control">
                         <button type="button" class="qty-btn" onclick="let q=document.getElementById('qty');q.value=Math.max(1,parseInt(q.value)-1)">−</button>

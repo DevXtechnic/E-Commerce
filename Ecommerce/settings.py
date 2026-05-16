@@ -20,6 +20,7 @@ INSTALLED_APPS = [
 	"users",
 	"mystore",
 	"crm",
+	"stores",
 ]
 
 MIDDLEWARE = [

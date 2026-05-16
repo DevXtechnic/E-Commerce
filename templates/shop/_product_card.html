@@ -12,6 +12,9 @@
         {% if product.is_featured %}
         <span class="product-badge badge-featured">Featured</span>
         {% endif %}
+        {% if not product.in_stock %}
+        <div class="sold-out-overlay"><span>Out of Stock</span></div>
+        {% endif %}
     </a>
     <div class="product-card-body">
         {% if product.brand %}

@@ -5,7 +5,7 @@ from django.utils.text import slugify
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, db_index=True)
     slug = models.SlugField(max_length=200, unique=True, blank=True)
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to="categories/", blank=True, null=True)
@@ -27,11 +27,11 @@ class Category(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("shop:category", kwargs={"slug": self.slug})
+        return f"/products/?category={self.slug}"
 
 
 class Brand(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, db_index=True)
     slug = models.SlugField(max_length=200, unique=True, blank=True)
     logo = models.ImageField(upload_to="brands/", blank=True, null=True)
 
@@ -48,7 +48,7 @@ class Brand(models.Model):
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=300)
+    name = models.CharField(max_length=300, db_index=True)
     slug = models.SlugField(max_length=300, unique=True, blank=True)
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name="products"
