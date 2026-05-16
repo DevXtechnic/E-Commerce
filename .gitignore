@@ -3,16 +3,8 @@ __pycache__/
 *$py.class
 env/
 venv/
-db.sqlite3
 .DS_Store
 .vscode/
 .idea/
-media/
 static_cdn/
 media_cdn/
-*.webp
-*.mp4
-*.svg
-*.png
-*.jpg
-*.jpeg

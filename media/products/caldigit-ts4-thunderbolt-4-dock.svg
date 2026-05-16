@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+    <defs>
+        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#1A1A21" />
+            <stop offset="100%" stop-color="#0D0D0F" />
+        </linearGradient>
+    </defs>
+    <rect width="800" height="600" fill="url(#grad)" />
+    <path d="M0,0 L800,0 L800,600 L0,600 Z" fill="none" stroke="#6C5CE7" stroke-width="4" opacity="0.3"/>
+    <text x="400" y="280" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="46" font-weight="900" fill="#F0F0F5" text-anchor="middle">CalDigit TS4 Thunderbolt 4 Dock</text>
+    <text x="400" y="340" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="28" font-weight="500" fill="#6C5CE7" text-anchor="middle">Ultimate Developer Dock</text>
+</svg>
