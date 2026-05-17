@@ -10,29 +10,57 @@
             <h1><i class="fas fa-shopping-bag"></i> Shopping Cart</h1>
         </div>
         {% if items %}
+        {% if reservation_timers %}
+        <div class="reservation-notice">
+            <i class="fas fa-clock"></i>
+            <div class="reservation-notice-text">
+                <strong>Items reserved for checkout</strong>
+                <span>Complete your purchase before the timer expires to keep your items.</span>
+            </div>
+        </div>
+        {% endif %}
+        {% if unavailable_items %}
+        <div class="alert alert-warning" style="margin-bottom: 24px;">
+            <i class="fas fa-exclamation-triangle"></i>
+            Some items in your cart are no longer available. They have been highlighted below.
+        </div>
+        {% endif %}
         <div class="cart-layout">
             <div class="cart-items">
                 {% for item in items %}
-                <div class="cart-item" id="cart-item-{{ item.id }}">
+                <div class="cart-item {% if item.id in unavailable_items %}cart-item-unavailable{% endif %}" id="cart-item-{{ item.id }}">
                     <div class="cart-item-img">
                         {% if item.product.primary_image %}
                         <img src="{{ item.product.primary_image.image.url }}" alt="{{ item.product.name }}">
                         {% else %}
                         <div class="product-placeholder sm"><i class="fas fa-box-open"></i></div>
                         {% endif %}
+                        {% if item.product.available_stock <= 0 %}
+                        <div class="stock-badge stock-badge-out">Out of Stock</div>
+                        {% elif item.product.available_stock <= 5 %}
+                        <div class="stock-badge stock-badge-low">Only {{ item.product.available_stock }} left!</div>
+                        {% endif %}
                     </div>
                     <div class="cart-item-info">
                         <h3><a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a></h3>
                         {% if item.product.brand %}<span class="product-brand">{{ item.product.brand.name }}</span>{% endif %}
                         <span class="cart-item-price">Rs. {{ item.product.current_price|intcomma }}</span>
+                        {% if item.id in reservation_timers %}
+                        <span class="cart-item-timer" data-timer-id="{{ item.id }}" data-seconds="{{ reservation_timers.item.id.seconds }}">
+                            <i class="fas fa-clock"></i> Reserved: <strong class="timer-display">--:--</strong>
+                        </span>
+                        {% endif %}
+                        {% if item.id in unavailable_items %}
+                        <span class="cart-item-warning"><i class="fas fa-exclamation-circle"></i> Stock no longer available</span>
+                        {% endif %}
                     </div>
                     <div class="cart-item-qty">
                         <form action="{% url 'cart:update_cart' item.id %}" method="POST" class="cart-qty-form">
                             {% csrf_token %}
                             <div class="qty-control">
-                                <button type="button" class="qty-btn" onclick="let q=this.nextElementSibling;q.value=Math.max(1,parseInt(q.value)-1);this.closest('form').submit()">−</button>
-                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" onchange="this.closest('form').submit()">
-                                <button type="button" class="qty-btn" onclick="let q=this.previousElementSibling;q.value=Math.min({{ item.product.stock }},parseInt(q.value)+1);this.closest('form').submit()">+</button>
+                                <button type="button" class="qty-btn" {% if item.product.available_stock <= 0 or item.id in unavailable_items %}disabled{% endif %} onclick="let q=this.nextElementSibling;q.value=Math.max(1,parseInt(q.value)-1);this.closest('form').submit()">−</button>
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.available_stock }}" {% if item.product.available_stock <= 0 or item.id in unavailable_items %}disabled{% endif %} onchange="this.closest('form').submit()">
+                                <button type="button" class="qty-btn" {% if item.quantity >= item.product.available_stock or item.id in unavailable_items %}disabled{% endif %} onclick="let q=this.previousElementSibling;q.value=Math.min({{ item.product.available_stock }},parseInt(q.value)+1);this.closest('form').submit()">+</button>
                             </div>
                         </form>
                     </div>
@@ -51,7 +79,14 @@
                 <div class="summary-row"><span>Subtotal ({{ cart.total_items }} items)</span><span>Rs. {{ cart.subtotal|intcomma }}</span></div>
                 <div class="summary-row"><span>Delivery</span><span class="text-success">Free</span></div>
                 <div class="summary-row total"><span>Total</span><span>Rs. {{ cart.subtotal|intcomma }}</span></div>
+                {% if unavailable_items %}
+                <button class="btn btn-primary btn-lg btn-block" disabled title="Remove unavailable items to proceed">
+                    Proceed to Checkout <i class="fas fa-arrow-right"></i>
+                </button>
+                <p class="checkout-warning">Remove unavailable items to proceed with checkout.</p>
+                {% else %}
                 <a href="{% url 'orders:checkout' %}" class="btn btn-primary btn-lg btn-block">Proceed to Checkout <i class="fas fa-arrow-right"></i></a>
+                {% endif %}
                 <a href="{% url 'shop:product_list' %}" class="btn btn-outline btn-block">Continue Shopping</a>
             </div>
         </div>

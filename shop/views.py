@@ -3,6 +3,10 @@ from django.db.models import Q, Avg
 from .models import Product, Category, Brand, Review
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from .search_index import search_index
+
+
+USE_CATEGORY_SEARCH = True
 
 
 def home(request):
@@ -82,6 +86,17 @@ def product_detail(request, slug):
     return render(request, "shop/product_detail.html", context)
 
 
+def suggestions(request):
+    query = request.GET.get("q", "").strip()
+    if len(query) < 2:
+        return JsonResponse({"suggestions": []})
+    if USE_CATEGORY_SEARCH:
+        results = search_index.search_by_category(query)
+    else:
+        results = search_index.search(query)
+    return JsonResponse({"suggestions": results})
+
+
 def search(request):
     query = request.GET.get("q", "")
     products = Product.objects.filter(is_active=True)
@@ -114,3 +129,62 @@ def add_review(request, slug):
         )
     from django.shortcuts import redirect
     return redirect("shop:product_detail", slug=slug)
+
+
+@login_required
+def notifications_page(request):
+    notifs = request.user.notifications.all()
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        data = []
+        for n in notifs[:20]:
+            data.append({
+                "id": n.id,
+                "type": n.type,
+                "title": n.title,
+                "message": n.message,
+                "link": n.link,
+                "icon": n.icon,
+                "is_read": n.is_read,
+                "created_at": n.created_at.strftime("%H:%M"),
+            })
+        return JsonResponse({"notifications": data})
+    return render(request, "users/notifications.html", {"notifications": notifs})
+
+
+@login_required
+def unread_count(request):
+    count = request.user.notifications.filter(is_read=False).count()
+    return JsonResponse({"count": count})
+
+
+@login_required
+def new_toasts(request):
+    toasts = request.user.notifications.filter(toast_shown=False)[:5]
+    data = []
+    for n in toasts:
+        data.append({
+            "id": n.id,
+            "type": n.type,
+            "title": n.title,
+            "message": n.message,
+            "link": n.link,
+            "icon": n.icon,
+            "created_at": n.created_at.strftime("%H:%M"),
+        })
+        n.toast_shown = True
+        n.save(update_fields=["toast_shown"])
+    return JsonResponse({"toasts": data})
+
+
+@login_required
+def mark_read(request, notif_id):
+    notif = get_object_or_404(request.user.notifications, id=notif_id)
+    notif.is_read = True
+    notif.save(update_fields=["is_read"])
+    return JsonResponse({"success": True})
+
+
+@login_required
+def mark_all_read(request):
+    request.user.notifications.filter(is_read=False).update(is_read=True)
+    return JsonResponse({"success": True})

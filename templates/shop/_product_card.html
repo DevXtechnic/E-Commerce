@@ -38,8 +38,8 @@
             <form action="{% url 'cart:add_to_cart' product.id %}" method="POST" class="add-to-cart-form">
                 {% csrf_token %}
                 <input type="hidden" name="quantity" value="1">
-                <button type="submit" class="btn btn-primary btn-sm btn-add-cart" {% if not product.in_stock %}disabled{% endif %}>
-                    {% if product.in_stock %}
+                <button type="submit" class="btn btn-primary btn-sm btn-add-cart" {% if not product.is_available %}disabled{% endif %}>
+                    {% if product.is_available %}
                     <i class="fas fa-shopping-bag"></i> Add to Cart
                     {% else %}
                     Out of Stock

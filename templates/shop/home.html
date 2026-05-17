@@ -25,6 +25,59 @@
     </div>
 </section>
 
+<!-- Promo Carousel -->
+<section class="promo-carousel-section">
+    <div class="container">
+        <div class="swiper promo-swiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide promo-slide">
+                    <div class="promo-bg promo-bg-1"></div>
+                    <div class="promo-content">
+                        <span class="promo-tag">New Arrivals</span>
+                        <h2>Latest Tech, Just Dropped</h2>
+                        <p>Be the first to own the newest gadgets and accessories.</p>
+                        <a href="{% url 'shop:product_list' %}" class="btn btn-primary">Shop New <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="promo-progress"><div class="promo-progress-bar"></div></div>
+                </div>
+                <div class="swiper-slide promo-slide">
+                    <div class="promo-bg promo-bg-2"></div>
+                    <div class="promo-content">
+                        <span class="promo-tag promo-tag-sale">Limited Offer</span>
+                        <h2>Up to 40% Off</h2>
+                        <p>Seasonal deals on laptops, phones, and premium accessories.</p>
+                        <a href="{% url 'shop:product_list' %}" class="btn btn-primary">View Deals <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="promo-progress"><div class="promo-progress-bar"></div></div>
+                </div>
+                <div class="swiper-slide promo-slide">
+                    <div class="promo-bg promo-bg-3"></div>
+                    <div class="promo-content">
+                        <span class="promo-tag promo-tag-brand">Featured</span>
+                        <h2>Apple Collection</h2>
+                        <p>MacBooks, iPhones, AirPods — all in one place.</p>
+                        <a href="{% url 'shop:product_list' %}?category=apple" class="btn btn-primary">Explore <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="promo-progress"><div class="promo-progress-bar"></div></div>
+                </div>
+                <div class="swiper-slide promo-slide">
+                    <div class="promo-bg promo-bg-saas"></div>
+                    <div class="promo-content">
+                        <span class="promo-tag promo-tag-saas">For Sellers</span>
+                        <h2>List Your Shop Here</h2>
+                        <p>No middleman commission. Just a flat SaaS fee. Keep 100% of your profits.</p>
+                        <a href="{% url 'mystore:about' %}" class="btn btn-primary">Learn More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="promo-progress"><div class="promo-progress-bar"></div></div>
+                </div>
+            </div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+</section>
+
 <!-- Categories -->
 {% if categories %}
 <section class="section">

@@ -5,6 +5,29 @@
 <section class="section page-section">
     <div class="container">
         <div class="page-header"><h1><i class="fas fa-credit-card"></i> Checkout</h1></div>
+        {% if unavailable_items %}
+        <div class="alert alert-error" style="margin-bottom: 24px;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>Cannot proceed with checkout.</strong> The following items no longer have sufficient stock:
+            <ul style="margin-top: 8px; margin-left: 20px;">
+                {% for item in unavailable_items %}
+                <li>{{ item.name }} — requested {{ item.requested }}, only {{ item.available }} available</li>
+                {% endfor %}
+            </ul>
+            <a href="{% url 'cart:view_cart' %}" class="btn btn-outline btn-sm" style="margin-top: 12px;">Return to Cart</a>
+        </div>
+        {% else %}
+        {% if price_changes %}
+        <div class="alert alert-warning" style="margin-bottom: 24px;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>Prices have changed</strong> for some items in your cart:
+            <ul style="margin-top: 8px; margin-left: 20px;">
+                {% for change in price_changes %}
+                <li>{{ change.name }}: was Rs. {{ change.old_price|intcomma }}, now Rs. {{ change.new_price|intcomma }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
         <div class="checkout-layout">
             <div class="checkout-form-wrap">
                 <h3>Shipping Information</h3>
@@ -30,11 +53,12 @@
                     <span>Rs. {{ item.line_total|intcomma }}</span>
                 </div>
                 {% endfor %}
-                <div class="summary-row"><span>Subtotal</span><span>Rs. {{ cart.subtotal|intcomma }}</span></div>
+                <div class="summary-row"><span>Subtotal</span><span>Rs. {{ calculated_total|intcomma }}</span></div>
                 <div class="summary-row"><span>Delivery</span><span class="text-success">Free</span></div>
-                <div class="summary-row total"><span>Total</span><span>Rs. {{ cart.subtotal|intcomma }}</span></div>
+                <div class="summary-row total"><span>Total</span><span>Rs. {{ calculated_total|intcomma }}</span></div>
             </div>
         </div>
+        {% endif %}
     </div>
 </section>
 {% endblock %}

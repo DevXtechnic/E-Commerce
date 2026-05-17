@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Our Stores{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>Our Stores</h1>
+        <p class="page-subtitle">Visit us in person at one of our locations.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="stores-grid">
+            {% for store in stores %}
+            <a href="{% url 'stores:store_detail' store.slug %}" class="store-card">
+                {% if store.image %}
+                <div class="store-card-image">
+                    <img src="{{ store.image.url }}" alt="{{ store.name }}">
+                </div>
+                {% endif %}
+                <div class="store-card-body">
+                    {% if store.is_flagship %}
+                    <span class="store-badge">Flagship</span>
+                    {% endif %}
+                    <h3>{{ store.name }}</h3>
+                    <p class="store-address">{{ store.get_full_address }}</p>
+                    <p class="store-hours">{{ store.opening_hours }}</p>
+                    <span class="store-link">View Details <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+            {% empty %}
+            <p class="text-muted">No store locations available yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

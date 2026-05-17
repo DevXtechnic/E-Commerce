@@ -55,25 +55,36 @@
                     {% endif %}
                 </div>
 
-                <div class="stock-status {% if product.in_stock %}in-stock{% else %}out-of-stock{% endif %}">
-                    <i class="fas fa-{% if product.in_stock %}check-circle{% else %}times-circle{% endif %}"></i>
-                    {% if product.in_stock %}In Stock ({{ product.stock }} available){% else %}Out of Stock{% endif %}
+                <div class="stock-status {% if product.is_available %}in-stock{% else %}out-of-stock{% endif %}">
+                    <i class="fas fa-{% if product.is_available %}check-circle{% else %}times-circle{% endif %}"></i>
+                    {% if product.is_available %}In Stock ({{ product.available_stock }} available){% else %}Out of Stock{% endif %}
                 </div>
 
                 <p class="product-desc">{{ product.description }}</p>
 
-                {% if product.in_stock %}
-                <form action="{% url 'cart:add_to_cart' product.id %}" method="POST" class="add-to-cart-form detail-form">
-                    {% csrf_token %}
+                {% if product.is_available %}
+                <div class="product-actions-row">
                     <div class="qty-control">
                         <button type="button" class="qty-btn" onclick="let q=document.getElementById('qty');q.value=Math.max(1,parseInt(q.value)-1)">−</button>
-                        <input type="number" name="quantity" id="qty" value="1" min="1" max="{{ product.stock }}">
-                        <button type="button" class="qty-btn" onclick="let q=document.getElementById('qty');q.value=Math.min({{ product.stock }},parseInt(q.value)+1)">+</button>
+                        <input type="number" name="quantity" id="qty" value="1" min="1" max="{{ product.available_stock }}">
+                        <button type="button" class="qty-btn" onclick="let q=document.getElementById('qty');q.value=Math.min({{ product.available_stock }},parseInt(q.value)+1)">+</button>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-lg btn-add-cart">
-                        <i class="fas fa-shopping-bag"></i> Add to Cart
-                    </button>
-                </form>
+                    <form action="{% url 'cart:add_to_cart' product.id %}" method="POST" class="add-to-cart-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="quantity" id="add-to-cart-qty" value="1">
+                        <button type="submit" class="btn btn-primary btn-lg btn-add-cart">
+                            <i class="fas fa-shopping-bag"></i> Add to Cart
+                        </button>
+                    </form>
+                    <form action="{% url 'cart:add_to_cart' product.id %}" method="POST" class="buy-now-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="quantity" id="buy-now-qty" value="1">
+                        <input type="hidden" name="buy_now" value="1">
+                        <button type="submit" class="btn btn-outline btn-lg btn-buy-now">
+                            <i class="fas fa-bolt"></i> Buy Now
+                        </button>
+                    </form>
+                </div>
                 {% endif %}
 
                 {% if user.is_authenticated %}

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Brand, Product, ProductImage, Review
+from .models import Category, Brand, Product, ProductImage, Review, Notification
 
 
 class ProductImageInline(admin.TabularInline):
@@ -35,3 +35,11 @@ class ProductAdmin(admin.ModelAdmin):
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ["product", "user", "rating", "created_at"]
     list_filter = ["rating"]
+
+
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ["title", "type", "user", "is_read", "toast_shown", "created_at"]
+    list_filter = ["type", "is_read", "toast_shown"]
+    search_fields = ["title", "message"]
+    readonly_fields = ["created_at"]

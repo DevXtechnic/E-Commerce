@@ -4,12 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Devbazer{% endblock %} — Your Premium Tech Marketplace</title>
-    <meta name="description" content="{% block meta_description %}Devbazer — Your premium tech marketplace. Shop laptops, phones, accessories and more.{% endblock %}">
+    <title>{% block title %}DevBazzar{% endblock %} — Your Premium Tech Marketplace</title>
+    <meta name="description" content="{% block meta_description %}DevBazzar — Your premium tech marketplace. Shop laptops, phones, accessories and more.{% endblock %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <link rel="stylesheet" href="{% static 'shop/css/style.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
@@ -35,22 +36,48 @@
         <div class="container navbar-inner">
             <a href="{% url 'shop:home' %}" class="logo">
                 <span class="logo-icon"><i class="fas fa-bolt"></i></span>
-                <span class="logo-text">Dev<span class="logo-accent">bazer</span></span>
+                <span class="logo-text">Dev<span class="logo-accent">Bazzar</span></span>
             </a>
-            <form action="{% url 'shop:search' %}" method="GET" class="search-bar">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" name="q" placeholder="Search products, brands..." value="{{ query|default:'' }}" autocomplete="off">
-                <button type="submit" class="search-btn">Search</button>
-            </form>
+            <div class="search-wrapper">
+                <form action="{% url 'shop:search' %}" method="GET" class="search-bar" id="search-form">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" name="q" placeholder="Search products, brands..." value="{{ query|default:'' }}" autocomplete="off" id="search-input">
+                    <button type="submit" class="search-btn">Search</button>
+                </form>
+                <div class="search-suggestions" id="search-suggestions"></div>
+            </div>
             <div class="nav-actions">
+                <button class="search-mobile-toggle" id="search-toggle" title="Search"><i class="fas fa-search"></i></button>
                 {% if user.is_authenticated %}
                 <a href="{% url 'users:wishlist' %}" class="nav-action-btn" title="Wishlist"><i class="fas fa-heart"></i></a>
+                <div class="notif-wrapper">
+                    <button class="nav-action-btn notif-btn" id="notif-btn" title="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="notif-badge" id="notif-badge" style="display:none;">0</span>
+                    </button>
+                    <div class="notif-dropdown" id="notif-dropdown">
+                        <div class="notif-dropdown-header">
+                            <strong>Notifications</strong>
+                            <button class="notif-mark-all" id="notif-mark-all">Mark all read</button>
+                        </div>
+                        <div class="notif-dropdown-list" id="notif-dropdown-list">
+                            <div class="notif-dropdown-empty">No notifications</div>
+                        </div>
+                        <div class="notif-dropdown-footer">
+                            <a href="{% url 'shop:notifications' %}">View All</a>
+                        </div>
+                    </div>
+                </div>
                 {% endif %}
+                <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                    <i class="fas fa-sun"></i>
+                </button>
                 <a href="{% url 'cart:view_cart' %}" class="nav-action-btn cart-btn" title="Cart" id="cart-btn">
                     <i class="fas fa-shopping-bag"></i>
                     <span class="cart-badge" id="cart-badge">{{ cart_count }}</span>
                 </a>
-                <button class="mobile-menu-btn" id="mobile-menu-btn" onclick="document.querySelector('.category-nav').classList.toggle('open')">
+                <button class="mobile-menu-btn" id="mobile-menu-btn">
                     <i class="fas fa-bars"></i>
                 </button>
             </div>
@@ -67,6 +94,25 @@
             </div>
         </div>
     </nav>
+    <!-- Search Backdrop -->
+    <div class="search-backdrop" id="search-backdrop"></div>
+    <!-- Mobile Search Overlay -->
+    <div class="search-bar-mobile" id="mobile-search">
+        <div class="search-bar-mobile-inner">
+            <div class="search-bar-mobile-header">
+                <span class="search-bar-mobile-title">Search DevBazzar</span>
+                <button class="search-close-btn" id="search-close-btn"><i class="fas fa-times"></i></button>
+            </div>
+            <form action="{% url 'shop:search' %}" method="GET" class="search-bar-mobile-form">
+                <div class="search-mobile-input-wrap">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" name="q" placeholder="Search products, brands..." value="{{ query|default:'' }}" autocomplete="off" id="mobile-search-input">
+                    <button type="submit" class="search-btn-mobile"><i class="fas fa-arrow-right"></i></button>
+                </div>
+                <div class="search-suggestions search-suggestions-mobile" id="mobile-search-suggestions"></div>
+            </form>
+        </div>
+    </div>
     <!-- Messages -->
     {% if messages %}
     <div class="messages-container">
@@ -86,7 +132,7 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col footer-brand">
-                    <a href="{% url 'shop:home' %}" class="footer-logo"><i class="fas fa-bolt"></i> Dev<span class="logo-accent">bazer</span></a>
+                    <a href="{% url 'shop:home' %}" class="footer-logo"><i class="fas fa-bolt"></i> Dev<span class="logo-accent">Bazzar</span></a>
                     <p>Your premium tech marketplace. Quality gadgets, competitive prices, trusted service.</p>
                     <div class="footer-social">
                         <a href="https://github.com/DevXtechnic/" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
@@ -128,10 +174,11 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>© 2026 Devbazer. All rights reserved.</p>
+                <p>© 2026 DevBazzar. All rights reserved.</p>
             </div>
         </div>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="{% static 'shop/js/main.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>

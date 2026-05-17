@@ -5,7 +5,7 @@ from django.utils.text import slugify
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, db_index=True)
     slug = models.SlugField(max_length=200, unique=True, blank=True)
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to="categories/", blank=True, null=True)
@@ -27,11 +27,11 @@ class Category(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("shop:category", kwargs={"slug": self.slug})
+        return f"/products/?category={self.slug}"
 
 
 class Brand(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, db_index=True)
     slug = models.SlugField(max_length=200, unique=True, blank=True)
     logo = models.ImageField(upload_to="brands/", blank=True, null=True)
 
@@ -48,7 +48,7 @@ class Brand(models.Model):
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=300)
+    name = models.CharField(max_length=300, db_index=True)
     slug = models.SlugField(max_length=300, unique=True, blank=True)
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name="products"
@@ -97,6 +97,20 @@ class Product(models.Model):
     @property
     def in_stock(self):
         return self.stock > 0
+
+    @property
+    def available_stock(self):
+        from django.utils import timezone
+        from datetime import timedelta
+        expiry = timezone.now() - timedelta(minutes=15)
+        reserved = sum(
+            r.quantity for r in self.reservations.filter(reserved_at__gte=expiry)
+        )
+        return max(0, self.stock - reserved)
+
+    @property
+    def is_available(self):
+        return self.available_stock > 0
 
     @property
     def primary_image(self):
@@ -156,3 +170,46 @@ class Review(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.product.name} ({self.rating}★)"
+
+
+class Notification(models.Model):
+    TYPES = [
+        ('deal', 'Deal Alert'),
+        ('price_drop', 'Price Drop'),
+        ('back_in_stock', 'Back in Stock'),
+        ('order', 'Order Update'),
+        ('promo', 'Promotion'),
+        ('system', 'System'),
+    ]
+    ICONS = {
+        'deal': 'fa-fire',
+        'price_drop': 'fa-tag',
+        'back_in_stock': 'fa-box-open',
+        'order': 'fa-truck',
+        'promo': 'fa-gift',
+        'system': 'fa-info-circle',
+    }
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name="notifications")
+    type = models.CharField(max_length=20, choices=TYPES, default='system')
+    title = models.CharField(max_length=200)
+    message = models.TextField()
+    link = models.URLField(blank=True, help_text="Optional link to product/order")
+    is_read = models.BooleanField(default=False)
+    toast_shown = models.BooleanField(default=False)
+    email_sent = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['user', 'is_read', '-created_at']),
+        ]
+
+    def __str__(self):
+        target = self.user.username if self.user else 'All Users'
+        return f"[{self.get_type_display()}] {self.title} → {target}"
+
+    @property
+    def icon(self):
+        return self.ICONS.get(self.type, 'fa-bell')
